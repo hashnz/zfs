@@ -17,15 +17,10 @@ class Zfs
         $this->processBuilder = $processBuilder;
     }
 
-    public function getFilesystems()
-    {
-        return new ZfsCollection();
-    }
-
     public function createFilesystem($name)
     {
         $process = $this->processBuilder
-            ->add('zfs create '.escapeshellarg($name))
+            ->setArguments(['zfs', 'create', $name])
             ->getProcess()
         ;
         $process->mustRun();
