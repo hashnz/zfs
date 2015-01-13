@@ -8,6 +8,11 @@ use Symfony\Component\Process\ProcessBuilder;
 class Zfs
 {
     /**
+     * @var array Base command to list zfs filesystems
+     */
+    private static $listCommand = ['sudo', 'zfs', 'list', '-o', 'name,used,avail,refer,mountpoint,origin'];
+
+    /**
      * @var ProcessBuilder
      */
     private $processBuilder;
@@ -43,8 +48,7 @@ class Zfs
      */
     public function getFilesystems()
     {
-        $builder = $this->getListProcessBuilder();
-        $process = $builder->getProcess();
+        $process = $this->processBuilder->setArguments(self::$listCommand)->getProcess();
         $process->mustRun();
         $output = $process->getOutput();
 
@@ -65,8 +69,8 @@ class Zfs
      */
     public function getFilesystem($name)
     {
-        $builder = $this->getListProcessBuilder();
-        $process = $builder
+        $process = $this->processBuilder
+            ->setArguments(self::$listCommand)
             ->add($name)
             ->getProcess()
         ;
@@ -146,8 +150,8 @@ class Zfs
      */
     public function getSnapshots($name)
     {
-        $builder = $this->getListProcessBuilder();
-        $process = $builder
+        $process = $this->processBuilder
+            ->setArguments(self::$listCommand)
             ->add('-t')
             ->add('snapshot')
             ->add('-r')
@@ -163,19 +167,6 @@ class Zfs
         }
 
         return $collection;
-    }
-
-    /**
-     * Create a base zfs list process
-     *
-     * @return ProcessBuilder
-     */
-    private function getListProcessBuilder()
-    {
-        $builder = $this->processBuilder
-            ->setArguments(['sudo', 'zfs', 'list', '-o', 'name,used,avail,refer,mountpoint,origin']);
-
-        return $builder;
     }
 
     /**
