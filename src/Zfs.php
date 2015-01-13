@@ -41,10 +41,8 @@ class Zfs
      */
     public function getFilesystems()
     {
-        $process = $this->processBuilder
-            ->setArguments(['sudo', 'zfs', 'list', '-o', 'name,used,avail,refer,mountpoint,origin'])
-            ->getProcess()
-        ;
+        $builder = $this->getListProcessBuilder();
+        $process = $builder->getProcess();
         $process->mustRun();
         $output = $process->getOutput();
 
@@ -64,8 +62,9 @@ class Zfs
      */
     public function getFilesystem($name)
     {
-        $process = $this->processBuilder
-            ->setArguments(['sudo', 'zfs', 'list', '-o', 'name,used,avail,refer,mountpoint,origin', $name])
+        $builder = $this->getListProcessBuilder();
+        $process = $builder
+            ->add($name)
             ->getProcess()
         ;
         $process->mustRun();
