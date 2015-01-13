@@ -2,6 +2,7 @@
 
 namespace Hashnz;
 
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\ProcessBuilder;
 
 class Zfs
@@ -21,6 +22,7 @@ class Zfs
      *
      * @param $name
      * @return bool
+     * @throws ProcessFailedException
      */
     public function createFilesystem($name)
     {
@@ -37,6 +39,7 @@ class Zfs
      * Get a collection of filesystems
      *
      * @return ZfsCollection
+     * @throws ProcessFailedException
      */
     public function getFilesystems()
     {
@@ -58,6 +61,7 @@ class Zfs
      *
      * @param $name
      * @return Filesystem
+     * @throws ProcessFailedException
      */
     public function getFilesystem($name)
     {
@@ -72,8 +76,6 @@ class Zfs
         return new Filesystem(
             $this->parseFilesystemString($output)[0]
         );
-
-        return $coll;
     }
 
     /**
@@ -100,6 +102,7 @@ class Zfs
      *
      * @param $name
      * @return bool
+     * @throws ProcessFailedException
      */
     public function destroyFilesystem($name)
     {
@@ -118,6 +121,7 @@ class Zfs
      * @param string $name
      * @param string $snap Defaults to time()
      * @return bool
+     * @throws ProcessFailedException
      */
     public function createSnapshot($name, $snap = null)
     {
@@ -138,6 +142,7 @@ class Zfs
      *
      * @param $name
      * @return ZfsCollection
+     * @throws ProcessFailedException
      */
     public function getSnapshots($name)
     {
@@ -177,6 +182,7 @@ class Zfs
      * Clone a snapshot
      * @param $name
      * @return bool
+     * @throws ProcessFailedException
      */
     public function createClone($snap, $name)
     {
