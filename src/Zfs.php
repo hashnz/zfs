@@ -127,4 +127,38 @@ class Zfs
 
         return true;
     }
+
+    public function getSnapshots($name)
+    {
+        $builder = $this->getListProcessBuilder();
+        $process = $builder
+            ->add('-t')
+            ->add('snapshot')
+            ->add('-r')
+            ->add($name)
+            ->getProcess()
+        ;
+        $process->mustRun();
+        $output = $process->getOutput();
+
+        $collection = new ZfsCollection();
+        foreach ($this->parseFilesystemString($output) as $fs) {
+            $collection->add(new Filesystem($fs));
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Create a base zfs list process
+     *
+     * @return ProcessBuilder
+     */
+    private function getListProcessBuilder()
+    {
+        $builder = $this->processBuilder
+            ->setArguments(['sudo', 'zfs', 'list', '-o', 'name,used,avail,refer,mountpoint,origin']);
+
+        return $builder;
+    }
 }

@@ -60,4 +60,12 @@ class ZfsSpec extends ObjectBehavior
         $this->createFilesystem('testpool/test')->shouldBe(true);
         $this->createSnapshot('testpool/test')->shouldBe(true);
     }
+
+    function it_should_get_a_snapshot_collection()
+    {
+        $this->createFilesystem('testpool/test')->shouldBe(true);
+        $this->createSnapshot('testpool/test', 'one')->shouldBe(true);
+        $this->createSnapshot('testpool/test', 'two')->shouldBe(true);
+        $this->getSnapshots('testpool/test')->shouldHaveType('Hashnz\ZfsCollection');
+    }
 }
