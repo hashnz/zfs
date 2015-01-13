@@ -17,14 +17,41 @@ class Zfs
         $this->processBuilder = $processBuilder;
     }
 
+    /**
+     * Create a ZFS filesystem
+     *
+     * @param $name
+     * @return bool
+     */
     public function createFilesystem($name)
     {
         $process = $this->processBuilder
-            ->setArguments(['zfs', 'create', $name])
+            ->setArguments(['sudo', 'zfs', 'create', $name])
             ->getProcess()
         ;
         $process->mustRun();
 
         return true;
+    }
+
+    /**
+     * Get a collection of filesystems
+     *
+     * @return ZfsCollection
+     */
+    public function getFilesystems()
+    {
+        $process = $this->processBuilder
+            ->setArguments(['sudo', 'zfs', 'list', '-o', 'name,used,avail,refer,mountpoint,origin'])
+            ->getProcess()
+        ;
+        $process->mustRun();
+
+        $op = $process->getOutput();
+
+        $coll = new ZfsCollection();
+        $coll->create($op);
+
+        return $coll;
     }
 }
