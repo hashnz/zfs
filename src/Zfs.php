@@ -112,6 +112,13 @@ class Zfs
         return true;
     }
 
+    /**
+     * Create the snapshot $name@$snap
+     *
+     * @param string $name
+     * @param string $snap Defaults to time()
+     * @return bool
+     */
     public function createSnapshot($name, $snap = null)
     {
         if (empty($snap)) {
@@ -126,6 +133,12 @@ class Zfs
         return true;
     }
 
+    /**
+     * Get a snapshot collection by name
+     *
+     * @param $name
+     * @return ZfsCollection
+     */
     public function getSnapshots($name)
     {
         $builder = $this->getListProcessBuilder();
@@ -158,5 +171,21 @@ class Zfs
             ->setArguments(['sudo', 'zfs', 'list', '-o', 'name,used,avail,refer,mountpoint,origin']);
 
         return $builder;
+    }
+
+    /**
+     * Clone a snapshot
+     * @param $name
+     * @return bool
+     */
+    public function createClone($snap, $name)
+    {
+        $process = $this->processBuilder
+            ->setArguments(['sudo', 'zfs', 'clone', $snap, $name])
+            ->getProcess()
+        ;
+        $process->mustRun();
+
+        return true;
     }
 }
