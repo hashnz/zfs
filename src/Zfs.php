@@ -113,4 +113,18 @@ class Zfs
 
         return true;
     }
+
+    public function createSnapshot($name, $snap = null)
+    {
+        if (empty($snap)) {
+            $snap = time();
+        }
+        $process = $this->processBuilder
+            ->setArguments(['sudo', 'zfs', 'snapshot', $name.'@'.$snap])
+            ->getProcess()
+        ;
+        $process->mustRun();
+
+        return true;
+    }
 }
