@@ -2,7 +2,6 @@
 
 namespace Hashnz;
 
-use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ProcessBuilder;
 
 class Zfs
