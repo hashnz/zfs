@@ -14,13 +14,23 @@ class Filesystem
     public function __construct(array $data = [])
     {
         if (!empty($data)) {
-            $this->name = $data['name'];
-            $this->used = $data['used'];
-            $this->avail = $data['avail'];
-            $this->refer = $data['refer'];
-            $this->mountpoint = $data['mountpoint'];
-            $this->origin = $data['origin'];
+            $this->setData($data);
         }
+    }
+
+    /**
+     * Set Filesystem data
+     *
+     * @param array $data
+     */
+    private function setData(array $data)
+    {
+        $this->name = $data['name'];
+        $this->used = $data['used'];
+        $this->avail = $data['avail'];
+        $this->refer = $data['refer'];
+        $this->mountpoint = $data['mountpoint'];
+        $this->origin = $data['origin'];
     }
 
     /**

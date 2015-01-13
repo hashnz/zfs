@@ -19,6 +19,13 @@ class ZfsSpec extends ObjectBehavior
         $builder->setArguments(['sudo', 'zpool', 'create', 'testpool', '/tmp/testdisk'])->getProcess()->mustRun();
     }
 
+    function letgo()
+    {
+        $builder = new ProcessBuilder();
+        $builder->setArguments(['sudo', 'zpool', 'destroy', 'testpool'])->getProcess()->run();
+        $builder->setArguments(['sudo', 'rm', '-rf', '/tmp/testdisk'])->getProcess()->run();
+    }
+
     function it_is_initializable()
     {
         $this->shouldHaveType('Hashnz\Zfs');
@@ -32,5 +39,19 @@ class ZfsSpec extends ObjectBehavior
     function it_should_return_a_filesystem_collection()
     {
         $this->getFilesystems()->shouldReturnAnInstanceOf('Hashnz\ZfsCollection');
+    }
+
+    function it_should_return_a_single_filesystem_by_name()
+    {
+        $this->createFilesystem('testpool/test')->shouldBe(true);
+        $this->getFilesystem('testpool/test')->shouldHaveType('Hashnz\Filesystem');
+        $this->getFilesystem('testpool/test')->getName()->shouldBe('testpool/test');
+    }
+
+    function it_should_destroy_a_filesystem_by_name()
+    {
+        $this->createFilesystem('testpool/test')->shouldBe(true);
+        $this->destroyFilesystem('testpool/test')->shouldBe(true);
+        $this->shouldThrow('Symfony\Component\Process\Exception\ProcessFailedException')->during('getFilesystem', ['testpool/test']);
     }
 }
