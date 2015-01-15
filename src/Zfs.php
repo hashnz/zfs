@@ -113,7 +113,7 @@ class Zfs
     {
         $command = ['sudo', 'zfs', 'destroy', $name];
         if ($force) {
-            $command[] = '-r';
+            $command[] = '-R';
         }
         $process = $this->processBuilder
             ->setArguments($command)
