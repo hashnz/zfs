@@ -55,6 +55,14 @@ class ZfsSpec extends ObjectBehavior
         $this->shouldThrow('Symfony\Component\Process\Exception\ProcessFailedException')->during('getFilesystem', ['testpool/test']);
     }
 
+    function it_should_destroy_a_filesystem_and_all_snapshots_by_name()
+    {
+        $this->createFilesystem('testpool/test')->shouldBe(true);
+        $this->createSnapshot('testpool/test')->shouldBe(true);
+        $this->destroyFilesystem('testpool/test', true)->shouldBe(true);
+        $this->shouldThrow('Symfony\Component\Process\Exception\ProcessFailedException')->during('getFilesystem', ['testpool/test']);
+    }
+
     function it_should_snapshot_a_filesystem()
     {
         $this->createFilesystem('testpool/test')->shouldBe(true);

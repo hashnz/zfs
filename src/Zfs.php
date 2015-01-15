@@ -104,14 +104,19 @@ class Zfs
     /**
      * Destroy a zfs filesystem
      *
-     * @param $name
+     * @param $name string
+     * @param $force bool Whether to force destruction
      * @return bool
      * @throws ProcessFailedException
      */
-    public function destroyFilesystem($name)
+    public function destroyFilesystem($name, $force = false)
     {
+        $command = ['sudo', 'zfs', 'destroy', $name];
+        if ($force) {
+            $command[] = '-r';
+        }
         $process = $this->processBuilder
-            ->setArguments(['sudo', 'zfs', 'destroy', $name])
+            ->setArguments($command)
             ->getProcess()
         ;
         $process->mustRun();
